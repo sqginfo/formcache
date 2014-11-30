@@ -2,6 +2,8 @@
 
 A simple jQuery form cache plugin.
 
+- [Demo](http://fengyuanchen.github.io/formcache)
+
 
 # Main
 
