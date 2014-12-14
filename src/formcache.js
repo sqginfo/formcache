@@ -1,29 +1,42 @@
+/*!
+ * Form Cache v@VERSION
+ * https://github.com/fengyuanchen/formcache
+ *
+ * Copyright 2014 Fengyuan Chen
+ * Released under the MIT license
+ *
+ * Date: @DATE
+ */
+
 (function (factory) {
-  if (typeof define === "function" && define.amd) {
+  if (typeof define === 'function' && define.amd) {
     // AMD. Register as anonymous module.
-    define("formcache", ["jquery"], factory);
+    define('formcache', ['jquery'], factory);
   } else {
     // Browser globals.
     factory(jQuery);
   }
 })(function ($) {
 
-  "use strict";
+  'use strict';
 
   var $window = $(window),
       sessionStorage = window.sessionStorage,
       localStorage = window.localStorage,
 
       // Constants
-      STRING_UNDEFINED = "undefined",
-      FORMCACHE_NAMESPACE = ".formcache",
+      STRING_UNDEFINED = 'undefined',
+      FORMCACHE_NAMESPACE = '.formcache',
+
+      // Patterns
+      REGEXP_CHARACTERS = /[\.\*\+\^\$\:\!\[\]#>~]+/g,
 
       // Events
-      EVENT_CHANGE = "change" + FORMCACHE_NAMESPACE,
-      EVENT_BEFOREUNLOAD = "beforeunload" + FORMCACHE_NAMESPACE,
+      EVENT_CHANGE = 'change' + FORMCACHE_NAMESPACE,
+      EVENT_BEFOREUNLOAD = 'beforeunload' + FORMCACHE_NAMESPACE,
 
       isCheckboxOrRadio = function (input) {
-        return input.type === "checkbox" || input.type === "radio";
+        return input.type === 'checkbox' || input.type === 'radio';
       },
 
       toNumber = function (n) {
@@ -44,18 +57,18 @@
     init: function () {
       var $this = this.$form,
           defaults = this.defaults,
-          key = defaults.key || $this.data("key"),
+          key = defaults.key || $this.data('key'),
           data;
 
       if (!key) {
-        $("form").each(function (i) {
-          $(this).data("key", i);
+        $('form').each(function (i) {
+          $(this).data('key', i);
         });
 
-        key = $this.data("key");
+        key = $this.data('key');
       }
 
-      this.key = (key = (location.pathname + "#formcache-" + key));
+      this.key = (key = (location.pathname + '#formcache-' + key));
 
       if (sessionStorage) {
         data = sessionStorage.getItem(key);
@@ -65,7 +78,7 @@
         data = localStorage.getItem(key);
       }
 
-      this.caches = typeof data === "string" ? JSON.parse(data) : [];
+      this.caches = typeof data === 'string' ? JSON.parse(data) : [];
       this.index = 0;
       this.activeIndex = 0;
       this.storing = null;
@@ -74,26 +87,26 @@
         defaults.controls = [];
       }
 
-      this.$controls = $this.find(defaults.controls.join());
+      this.$controls = $this.find(defaults.controls.join()).not(':file'); // Ignores file inputs
 
       this.addListeners();
       this.outputCache();
     },
 
     addListeners: function () {
-      this.$controls.on(EVENT_CHANGE, (this._change = $.proxy(this.change, this)));
-      $window.on(EVENT_BEFOREUNLOAD, (this._beforeunload = $.proxy(this.beforeunload, this)));
+      this.$controls.on(EVENT_CHANGE, $.proxy(this.change, this));
+      $window.on(EVENT_BEFOREUNLOAD, $.proxy(this.beforeunload, this));
     },
 
     removeListeners: function () {
-      this.$controls.off(EVENT_CHANGE, this._change);
-      $window.off(EVENT_BEFOREUNLOAD, this._beforeunload);
+      this.$controls.off(EVENT_CHANGE, this.change);
+      $window.off(EVENT_BEFOREUNLOAD, this.beforeunload);
     },
 
     change: function (e) {
       var input = e.target,
           $this = $(input),
-          name = $this.attr("name"),
+          name = $this.attr('name'),
           value = [],
           tmpName,
           val;
@@ -102,9 +115,9 @@
         return;
       }
 
-      tmpName = name.replace(/[\.\*\+\^\$\:\!\[\]#>~]+/g, ""); // Replaces unintended characters
+      tmpName = name.replace(REGEXP_CHARACTERS, ''); // Replaces unintended characters
 
-      this.$controls.filter("[name*='" + tmpName + "']").each(function () {
+      this.$controls.filter('[name*="' + tmpName + '"]').each(function () {
         if (isCheckboxOrRadio(input)) {
           value.push(this.checked);
         } else {
@@ -133,7 +146,7 @@
       var activeIndex = this.activeIndex || this.index,
           cache = this.getCache(activeIndex);
 
-      if (typeof name === "string") {
+      if (typeof name === 'string') {
         cache[name] = value;
       } else {
         cache = this.serialize();
@@ -147,7 +160,7 @@
 
       this.$controls.each(function () {
         var $this = $(this),
-            name = $this.attr("name"),
+            name = $this.attr('name'),
             value,
             val;
 
@@ -226,7 +239,7 @@
 
         this.$controls.each(function () {
           var $this = $(this),
-              name = $this.attr("name"),
+              name = $this.attr('name'),
               value,
               val;
 
@@ -284,34 +297,34 @@
 
     destroy: function () {
       this.removeListeners();
-      this.$form.removeData("formcache");
+      this.$form.removeData('formcache');
     }
   };
 
   FormCache.DEFAULTS = {
-    key: "",
+    key: '',
     local: true,
     session: true,
     controls: [
-      "select",
-      "textarea",
-      "input"
-      // "input[type='text']",
-      // "input[type='password']",
-      // "input[type='datetime']",
-      // "input[type='checkbox']",
-      // "input[type='radio']",
-      // "input[type='datetime-local']",
-      // "input[type='date']",
-      // "input[type='month']",
-      // "input[type='time']",
-      // "input[type='week']",
-      // "input[type='number']",
-      // "input[type='email']",
-      // "input[type='url']",
-      // "input[type='search']",
-      // "input[type='tel']",
-      // "input[type='color']"
+      'select',
+      'textarea',
+      'input'
+      // 'input[type="text"]',
+      // 'input[type="password"]',
+      // 'input[type="datetime"]',
+      // 'input[type="checkbox"]',
+      // 'input[type="radio"]',
+      // 'input[type="datetime-local"]',
+      // 'input[type="date"]',
+      // 'input[type="month"]',
+      // 'input[type="time"]',
+      // 'input[type="week"]',
+      // 'input[type="number"]',
+      // 'input[type="email"]',
+      // 'input[type="url"]',
+      // 'input[type="search"]',
+      // 'input[type="tel"]',
+      // 'input[type="color"]'
     ]
   };
 
@@ -329,14 +342,14 @@
 
     this.each(function () {
       var $this = $(this),
-          data = $this.data("formcache"),
+          data = $this.data('formcache'),
           fn;
 
       if (!data) {
-        $this.data("formcache", (data = new FormCache(this, options)));
+        $this.data('formcache', (data = new FormCache(this, options)));
       }
 
-      if (typeof options === "string" && $.isFunction((fn = data[options]))) {
+      if (typeof options === 'string' && $.isFunction((fn = data[options]))) {
         result = fn.apply(data, args);
       }
     });
@@ -354,6 +367,6 @@
   };
 
   $(function () {
-    $("form[data-toggle='formcache']").formcache();
+    $('form[data-toggle="formcache"]').formcache();
   })
 });
