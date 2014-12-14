@@ -5,15 +5,6 @@ A simple jQuery form cache plugin.
 - [Demo](http://fengyuanchen.github.io/formcache)
 
 
-# Main
-
-```
-dist/
-├── dist/formcache.js      (9 KB)
-└── dist/formcache.min.js  (4 KB)
-```
-
-
 # Getting started
 
 ## Quick start
@@ -50,7 +41,7 @@ Include files:
 ```
 
 ```javascript
-$("#form").formcache()
+$('#form').formcache()
 ```
 
 
@@ -59,7 +50,7 @@ $("#form").formcache()
 #### key
 
 - Type: `String` | `Number`
-- Default: `""`
+- Default: `''`
 
 A special identification for the form cache, must be different to other forms in the same page.
 
@@ -88,13 +79,15 @@ Store cache in sessionStorage.
 - Default:
 ```javascript
 [
-  "select",
-  "textarea",
-  "input"
+  'select',
+  'textarea',
+  'input'
 ]
 ```
 
 A jQuery selectors array. Defines the form controls which need to be cached.
+
+**Note:** All file inputs will be ignored by default all the way.
 
 
 
@@ -102,21 +95,17 @@ A jQuery selectors array. Defines the form controls which need to be cached.
 
 #### getCache([index])
 
----
-
-##### index:
-- Type: `Number`
-- Default: `0`
-
----
+Params | Type | Default | Description
+------ | ---- | ------- | -----------
+index | `Number` | `0` | Cache index
 
 Get the default cache object or a special one.
 
 **Examples:**
 
 ```
-$().formcache("getCache")
-$().formcache("getCache", 1)
+$().formcache('getCache')
+$().formcache('getCache', 1)
 ```
 
 
@@ -127,73 +116,56 @@ Get all cache objects.
 **Examples:**
 
 ```
-$().formcache("getCaches")
+$().formcache('getCaches')
 ```
 
 
 #### setCache([index, ]data)
 
----
-
-##### index
-
-- Type: `Number`
-- Default: `0`
-
-##### data
-
-- Type: `Object`
-
----
+Params | Type | Default | Description
+------ | ---- | ------- | -----------
+index | `Number` | `0` | Cache index
+data  | `Object` |     | Cache item
 
 Override the default cache object or add a new one.
 
 **Examples:**
 
 ```
-$().formcache("setCache", {})
-$().formcache("setCache", 1, {})
+$().formcache('setCache', {})
+$().formcache('setCache', 1, {})
 ```
 
 
 #### setCaches(data)
 
----
-
-##### data
-
-- Type: `Array`
-
----
+Params | Type | Description
+------ | ---- | -----------
+data | `Array` | Cache items
 
 Override the old caches with new caches.
 
 **Examples:**
 
 ```
-$().formcache("setCaches", [{}])
-$().formcache("setCaches", [{}, {}])
+$().formcache('setCaches', [{}])
+$().formcache('setCaches', [{}, {}])
 ```
 
 
 #### removeCache([index])
 
----
-
-##### index
-
-- Type: `Number`
-- Default: `0`
-
----
+Params | Type | Default | Description
+------ | ---- | ------- | -----------
+index | `Number` | `0` | Cache index
 
 Remove the default cache object or a special one.
 
 **Examples:**
 
 ```
-$().formcache("removeCache")
-$().formcache("removeCache", 1)
+$().formcache('removeCache')
+$().formcache('removeCache', 1)
 ```
 
 
@@ -204,20 +176,15 @@ Remove all cache objects.
 **Examples:**
 
 ```
-$().formcache("removeCaches")
+$().formcache('removeCaches')
 ```
 
 
 #### outputCache([index])
 
----
-
-##### index
-
-- Type: `Number`
-- Default: `0`
-
----
+Params | Type | Default | Description
+------ | ---- | ------- | -----------
+index | `Number` | `0` | Cache index
 
 Output the default cache object or a special one to the form.
 
@@ -226,8 +193,8 @@ The outputed cache object will be updated automatically when any form control ch
 **Examples:**
 
 ```
-$().formcache("outputCache")
-$().formcache("outputCache", 1)
+$().formcache('outputCache')
+$().formcache('outputCache', 1)
 ```
 
 
@@ -248,6 +215,20 @@ Clear all caches.
 Destroy the formcache instance, but keep the caches.
 
 If you want to remove all caches, you can call `clear` method first and then call the `destroy` method.
+
+
+## Browser Support
+
+- Chrome 31+
+- Firefox 31+
+- Internet Explorer 8+
+- Opera 26+
+- Safari 5.1+
+- iOS Safari 7.1+
+- Android Browser 4.1+
+- Chrome for Android 39+
+
+As a jQuery plugin, you can reference to the [jQuery Browser Support](http://jquery.com/browser-support/).
 
 
 ## [License](https://github.com/fengyuanchen/formcache/blob/master/LICENSE.md)

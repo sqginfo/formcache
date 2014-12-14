@@ -1,94 +1,131 @@
 module.exports = function (grunt) {
 
-  "use strict";
+  'use strict';
 
   grunt.initConfig({
-    pkg: grunt.file.readJSON("package.json"),
-    banner: "/*!\n" +
-            " * <%= pkg.name %> v<%= pkg.version %>\n" +
-            " * <%= pkg.homepage %>\n" +
-            " *\n" +
-            " * Copyright <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>\n" +
-            " * Released under the <%= pkg.license.type %> license\n" +
-            " */\n",
+    pkg: grunt.file.readJSON('package.json'),
+
     clean: {
-      dist: ["dist"],
-      build: ["build/<%= pkg.version %>.<%= grunt.template.today('yyyymmdd') %>"],
-      release: ["releases/<%= pkg.version %>"],
-      docs: ["docs/dist"]
+      dist: ['dist'],
+      build: ['build/<%= pkg.version %>.<%= grunt.template.today("yyyymmdd") %>'],
+      release: ['releases/<%= pkg.version %>'],
+      site: ['_gh_pages']
     },
+
     jshint: {
       options: {
-        jshintrc: ".jshintrc"
+        jshintrc: '.jshintrc'
       },
-      files: ["*.js", "src/*.js"]
+      files: ['*.js', 'src/*.js']
     },
+
     jscs: {
       options: {
-        config: ".jscsrc"
+        config: '.jscsrc'
       },
-      files: ["*.js", "src/*.js"]
+      files: ['*.js', 'src/*.js']
     },
+
     uglify: {
+      options: {
+        preserveComments: 'some'
+      },
       dist: {
-        src: "src/<%= pkg.name %>.js",
-        dest: "dist/<%= pkg.name %>.min.js"
+        src: 'src/<%= pkg.name %>.js',
+        dest: 'dist/<%= pkg.name %>.min.js'
+      },
+      site: {
+        src: 'docs/js/docs.js',
+        dest: '_gh_pages/js/docs.js'
       }
     },
-    usebanner: {
-      options: {
-        position: "top",
-        banner: "<%= banner %>"
-      },
-      files: ["dist/*.js"]
+
+    replace: {
+      dist: {
+        options: {
+          prefix: '@',
+          patterns: [{
+            match: 'VERSION',
+            replacement: '<%= pkg.version %>'
+          }, {
+            match: 'DATE',
+            replacement: new Date().toISOString()
+          }]
+        },
+        files: [{
+          expand: true,
+          flatten: true,
+          src: 'dist/*.js',
+          dest: 'dist/'
+        }]
+      }
     },
+
+    htmlmin: {
+      dist: {
+        options: {
+          minifyJS: true,
+          minifyCSS: true,
+          removeComments: true,
+          collapseWhitespace: true
+        },
+        files: {
+          '_gh_pages/index.html': 'docs/index.html'
+        }
+      }
+    },
+
     copy: {
       dist: {
         expand: true,
-        cwd: "src",
-        src: "**",
-        dest: "dist",
-        filter: "isFile"
+        flatten: true,
+        src: 'src/*.js',
+        dest: 'dist'
       },
       build: {
         expand: true,
-        cwd: "dist",
-        src: "**",
-        dest: "build/<%= pkg.version %>.<%= grunt.template.today('yyyymmdd') %>",
-        filter: "isFile"
+        flatten: true,
+        src: 'dist/*.js',
+        dest: 'build/<%= pkg.version %>.<%= grunt.template.today("yyyymmdd") %>'
       },
       release: {
         expand: true,
-        cwd: "dist",
-        src: "**",
-        dest: "releases/<%= pkg.version %>",
-        filter: "isFile"
+        flatten: true,
+        src: 'dist/*.js',
+        dest: 'releases/<%= pkg.version %>'
       },
       docs: {
         expand: true,
-        cwd: "dist/",
-        src: "*.js",
-        dest: "docs/dist/",
-        filter: "isFile"
+        flatten: true,
+        src: 'dist/*.js',
+        dest: 'docs/js/'
       },
-      others: {
-        src: "README.md",
-        dest: "docs/"
+      site: {
+        expand: true,
+        flatten: true,
+        src: 'dist/*.js',
+        dest: '_gh_pages/js/'
+      },
+      html: {
+        expand: true,
+        flatten: true,
+        src: 'docs/*.html',
+        dest: '_gh_pages'
       }
     },
+
     watch: {
       files: [
-        "src/<%= pkg.name %>.js"
+        'src/<%= pkg.name %>.js'
       ],
-      tasks: "jshint"
+      tasks: 'jshint'
     }
   });
 
   // Loading dependencies
-  require("load-grunt-tasks")(grunt);
+  require('load-grunt-tasks')(grunt);
 
-  grunt.registerTask("build", ["clean:build", "copy:build"]);
-  grunt.registerTask("release", ["clean:release", "copy:release"]);
-  grunt.registerTask("docs", ["clean:docs", "copy:docs", "copy:others"]);
-  grunt.registerTask("default", ["clean:dist", "jshint", "jscs", "uglify", "copy:dist", "usebanner", "build", "release", "docs"]);
+  grunt.registerTask('site', ['clean:site', 'uglify:site', 'copy:site', 'copy:html', 'htmlmin']);
+
+  grunt.registerTask('default', ['clean', 'jshint', 'jscs', 'uglify:dist', 'copy:dist', 'replace', 'copy:build', 'copy:release', 'copy:docs']);
 };
