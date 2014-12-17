@@ -55,10 +55,30 @@
     constructor: FormCache,
 
     init: function () {
+      var defaults = this.defaults;
+
+      defaults.maxAge = Math.abs(defaults.maxAge || defaults.maxage);
+      defaults.autoStore = Boolean(defaults.autoStore || defaults.autostore);
+      this.initKey();
+      this.initStorage();
+      this.caches = this.storage.caches;
+      this.index = 0;
+      this.activeIndex = 0;
+      this.storing = null;
+
+      if (!$.isArray(defaults.controls)) {
+        defaults.controls = [];
+      }
+
+      this.$controls = this.$form.find(defaults.controls.join()).not(':file'); // Ignores file inputs
+
+      this.addListeners();
+      this.outputCache();
+    },
+
+    initKey: function () {
       var $this = this.$form,
-          defaults = this.defaults,
-          key = defaults.key || $this.data('key'),
-          data;
+          key = this.defaults.key || $this.data('key');
 
       if (!key) {
         $('form').each(function (i) {
@@ -68,39 +88,54 @@
         key = $this.data('key');
       }
 
-      this.key = (key = (location.pathname + '#formcache-' + key));
+      this.key = (location.pathname + '#formcache-' + key);
+    },
+
+    initStorage: function () {
+      var defaults = this.defaults,
+          key = this.key,
+          now = new Date(),
+          original = {
+            date: now,
+            maxAge: defaults.maxAge,
+            caches: []
+          },
+          storage;
 
       if (sessionStorage) {
-        data = sessionStorage.getItem(key);
+        storage = sessionStorage.getItem(key);
       }
 
-      if (!data && localStorage) {
-        data = localStorage.getItem(key);
+      if (!storage && localStorage) {
+        storage = localStorage.getItem(key);
       }
 
-      this.caches = typeof data === 'string' ? JSON.parse(data) : [];
-      this.index = 0;
-      this.activeIndex = 0;
-      this.storing = null;
+      storage = typeof storage === 'string' ? JSON.parse(storage) : null;
 
-      if (!$.isArray(defaults.controls)) {
-        defaults.controls = [];
+      if ($.isPlainObject(storage)) {
+        if (typeof storage.maxAge === 'number' && ((now - new Date(storage.date)) / 1000) > storage.maxAge) {
+          storage = original;
+          // this.clear(); // Clears expired storage
+        }
+      } else {
+        storage = original;
       }
 
-      this.$controls = $this.find(defaults.controls.join()).not(':file'); // Ignores file inputs
-
-      this.addListeners();
-      this.outputCache();
+      this.storage = storage;
     },
 
     addListeners: function () {
-      this.$controls.on(EVENT_CHANGE, $.proxy(this.change, this));
-      $window.on(EVENT_BEFOREUNLOAD, $.proxy(this.beforeunload, this));
+      if (this.defaults.autoStore) {
+        this.$controls.on(EVENT_CHANGE, $.proxy(this.change, this));
+        $window.on(EVENT_BEFOREUNLOAD, $.proxy(this.beforeunload, this));
+      }
     },
 
     removeListeners: function () {
-      this.$controls.off(EVENT_CHANGE, this.change);
-      $window.off(EVENT_BEFOREUNLOAD, this.beforeunload);
+      if (this.defaults.autoStore) {
+        this.$controls.off(EVENT_CHANGE, this.change);
+        $window.off(EVENT_BEFOREUNLOAD, this.beforeunload);
+      }
     },
 
     change: function (e) {
@@ -263,22 +298,20 @@
     },
 
     store: function () {
-      var caches = this.caches,
+      var storage = this.storage,
           key = this.key,
           defaults = this.defaults;
 
-      if (!$.isArray(caches)) {
-        return;
-      }
-
-      caches = JSON.stringify(caches);
+      storage.date = new Date();
+      storage.maxAge = defaults.maxAge;
+      storage = JSON.stringify(storage);
 
       if (defaults.session && sessionStorage) {
-        sessionStorage.setItem(key, caches);
+        sessionStorage.setItem(key, storage);
       }
 
       if (defaults.local && localStorage) {
-        localStorage.setItem(key, caches);
+        localStorage.setItem(key, storage);
       }
     },
 
@@ -305,6 +338,8 @@
     key: '',
     local: true,
     session: true,
+    autoStore: true,
+    maxAge: undefined,
     controls: [
       'select',
       'textarea',
@@ -368,5 +403,5 @@
 
   $(function () {
     $('form[data-toggle="formcache"]').formcache();
-  })
+  });
 });
