@@ -73,6 +73,28 @@ Store cache in localStorage.
 Store cache in sessionStorage.
 
 
+#### autoStore
+
+- Type: `Boolean`
+- Default: `true`
+
+Update and store the cache automatically when a form control changed or before page unload.
+
+
+#### maxAge
+
+- Type: `Number`
+- Default: `undefined`
+
+set the stored time (in seconds) of the caches, just like the `max-age` for `cookie`.
+
+By default, the session caches will be cleared when the browser closes, and the local caches will be stored all the time.
+
+**Notes**:
+- session caches still will be cleared when the browser closes.
+- local caches still will be cleared when the browser caches clears.
+
+
 #### controls
 
 - Type: `Array`
@@ -87,7 +109,7 @@ Store cache in sessionStorage.
 
 A jQuery selectors array. Defines the form controls which need to be cached.
 
-**Note:** All file inputs will be ignored by default all the way.
+**Note:** All file inputs will be ignored always by default.
 
 
 
@@ -195,6 +217,19 @@ The outputed cache object will be updated automatically when any form control ch
 ```
 $().formcache('outputCache')
 $().formcache('outputCache', 1)
+```
+
+#### serialize()
+
+Serialize the form and return a cache object.
+
+**Examples:**
+
+```
+var cache = $('form').formcache('serialize');
+
+$('form').formcache('setCache', cache);
+$('form').formcache('setCaches', [cache, cache]);
 ```
 
 

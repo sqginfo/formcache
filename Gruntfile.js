@@ -23,7 +23,7 @@ module.exports = function (grunt) {
       options: {
         config: '.jscsrc'
       },
-      files: ['*.js', 'src/*.js']
+      files: [/*'*.js', */'src/*.js']
     },
 
     uglify: {

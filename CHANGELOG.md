@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.0.3 (Dec 17, 2014)
+
+- Add new options: "autoStore", "maxAge".
+- Add new method: "serialize".
+
+
 ### 0.0.2 (Dec 14, 2014)
 
 - Turns to use single quotation marks.

@@ -1,7 +1,7 @@
 {
   "name": "formcache",
   "description": "A simple jQuery form cache plugin.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "dist/formcache.js",
   "keywords": [
     "form",
