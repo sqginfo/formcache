@@ -249,7 +249,7 @@ Clear all caches.
 
 Destroy the formcache instance, but keep the caches.
 
-If you want to remove all caches, you can call `clear` method first and then call the `destroy` method.
+If you want to remove all caches, you can call `clear` method first and then call this method.
 
 
 ## Browser Support
