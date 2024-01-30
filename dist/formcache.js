@@ -1,8 +1,6 @@
 /*!
  * Form Cache v0.0.3
- * https://github.com/fengyuanchen/formcache
  *
- * Copyright 2014 Fengyuan Chen
  * Released under the MIT license
  *
  * Date: 2014-12-17T12:42:29.194Z
