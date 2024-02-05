@@ -1,5 +1,5 @@
 {
-  "name": "formcache",
+  "name": "sqginfo/formcache",
   "description": "A simple jQuery form cache plugin.",
   "version": "0.0.4",
   "main": "dist/formcache.js",
