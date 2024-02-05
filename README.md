@@ -1,8 +1,7 @@
-# [Form Cache](https://github.com/fengyuanchen/formcache)
+# [Form Cache](https://github.com/sqginfo/formcache)
 
 A simple jQuery form cache plugin.
 
-- [Demo](http://fengyuanchen.github.io/formcache)
 
 
 # Getting started
@@ -11,8 +10,8 @@ A simple jQuery form cache plugin.
 
 Three quick start options are available:
 
-- [Download the latest release](https://github.com/fengyuanchen/formcache/archive/master.zip).
-- Clone the repository: `git clone https://github.com/fengyuanchen/formcache.git`.
+- [Download the latest release](https://github.com/sqginfo/formcache/archive/master.zip).
+- Clone the repository: `git clone https://github.com/sqginfo/formcache.git`.
 - Install with [NPM](http://npmjs.org): `npm install formcache`.
 
 
