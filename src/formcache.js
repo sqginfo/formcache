@@ -2,7 +2,7 @@
  * Form Cache v@VERSION
  * https://github.com/sqginfo/formcache
  *
- * Copyright 2014 Fengyuan Chen
+ * Copyright 2024 SQGINFO
  * Released under the MIT license
  *
  * Date: @DATE

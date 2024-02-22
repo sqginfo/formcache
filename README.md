@@ -265,6 +265,6 @@ If you want to remove all caches, you can call `clear` method first and then cal
 As a jQuery plugin, you can reference to the [jQuery Browser Support](http://jquery.com/browser-support/).
 
 
-## [License](https://github.com/fengyuanchen/formcache/blob/master/LICENSE.md)
+## [License](https://github.com/sqginfo/formcache/blob/master/LICENSE.md)
 
 Released under the [MIT](http://opensource.org/licenses/mit-license.html) license.
